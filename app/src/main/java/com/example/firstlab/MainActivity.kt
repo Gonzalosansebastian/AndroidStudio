@@ -49,9 +49,25 @@ class MainActivity : ComponentActivity() {
 
 
     private val incrementScoreAndLevel : (Int) -> Map<String,Int> = { inc ->
-        score += inc
+
+        val randomIncrement = if (level > 0 ){
+            (1..level).random()
+
+        } else {
+            1
+        }
+
+        score += randomIncrement
         level = score / 10
         //mapOf(Pair("score", score), Pair("level", level))
+        mapOf(SCORE_KEY to score, LEVEL_KEY to level)
+    }
+
+    private val decrementScoreandLevel: (Int) -> Map<String,Int> = { dec ->
+        val decrementValue = level * 2
+
+        score = maxOf(0,score - decrementValue)
+        level = score / 10
         mapOf(SCORE_KEY to score, LEVEL_KEY to level)
     }
 
@@ -80,7 +96,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     topBar = { CenterAlignedTopAppBar( title = { Text(text = "Super Game Counter") } ) }
                 ) { innerPadding ->
-                    GameStateDisplay(name = userName, score, level, Modifier.padding(innerPadding), incrementScoreAndLevel, goToEndGameActivity)
+                    GameStateDisplay(name = userName, score, level, Modifier.padding(innerPadding), incrementScoreAndLevel, goToEndGameActivity,
+                        onDecButtonClick = decrementScoreandLevel)
                 }
             }
         }
@@ -138,7 +155,8 @@ fun GameStateDisplay(
     initLevel: Int,
     modifier: Modifier = Modifier,
     onIncButtonClick : (Int) -> Map<String,Int>,
-    onEndGameButtonClick : () -> Unit
+    onEndGameButtonClick : () -> Unit,
+    onDecButtonClick: (Int) -> Map<String, Int>
 ) {
     var score by remember { mutableIntStateOf(initScore) }
     var level by remember { mutableIntStateOf(initLevel) }
@@ -191,9 +209,23 @@ fun GameStateDisplay(
                     val result = onIncButtonClick(1)
                     score = result[MainActivity.SCORE_KEY]!!
                     level = result[MainActivity.LEVEL_KEY]!!
+
                 }
+                Spacer(Modifier.height(8.dp))
+
+                // NUEVO: Botón para decrementar
+                StandardButton(
+                    label = "Decrease Score",
+                    onClick = {
+                        val result = onDecButtonClick(1)
+                        score = result[MainActivity.SCORE_KEY]!!
+                        level = result[MainActivity.LEVEL_KEY]!!
+                    }
+                )
             }
+
         }
+
         Row(
             modifier = Modifier
                 .fillMaxSize()
