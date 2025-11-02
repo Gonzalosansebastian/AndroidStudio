@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -38,7 +39,7 @@ fun LauncherScreen(onPlayClicked: (String) -> Unit){
     ) {
         // 1️⃣ Cabecera
         Text(
-            text = "Mi Aplicación",
+            text = stringResource(R.string.launcher_title),
             fontSize = 32.sp
         )
 
@@ -48,14 +49,14 @@ fun LauncherScreen(onPlayClicked: (String) -> Unit){
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
-            label = { Text("Nombre de usuario") }
+            label = { Text(stringResource(R.string.username_hint)) }
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         // 3️⃣ Botón "Jugar"
         Button(onClick = { onPlayClicked(nombre) }) {
-            Text("Jugar")
+            Text(stringResource(R.string.play_button))
         }
     }
 }

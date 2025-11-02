@@ -24,13 +24,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.firstlab.ui.theme.FirstLabTheme
@@ -41,6 +45,8 @@ class MainActivity : ComponentActivity() {
         const val TAG = "MainActivity"
         const val SCORE_KEY = "score"
         const val LEVEL_KEY = "level"
+
+        const val REACHED_LEVEL_10_KEY = "reached_level_10"
     }
 
     private lateinit var userName : String
@@ -59,7 +65,12 @@ class MainActivity : ComponentActivity() {
 
         score += randomIncrement
         level = score / 10
-        //mapOf(Pair("score", score), Pair("level", level))
+
+        //verificar si llego al nivel 10
+        if (level >= 10) {
+            goToEndGameActivity(true)
+        }
+
         mapOf(SCORE_KEY to score, LEVEL_KEY to level)
     }
 
@@ -71,10 +82,12 @@ class MainActivity : ComponentActivity() {
         mapOf(SCORE_KEY to score, LEVEL_KEY to level)
     }
 
-    private val goToEndGameActivity : () -> Unit =  {
+    private val goToEndGameActivity : (Boolean) -> Unit =  { reachedLevel10 ->
         val intent = Intent(this, EndGameActivity::class.java)
         intent.putExtra(SCORE_KEY, score)
         intent.putExtra(LEVEL_KEY, level)
+        intent.putExtra(REACHED_LEVEL_10_KEY, reachedLevel10)
+        intent.putExtra("nombre de usuario", userName)
         startActivity(intent)
     }
 
@@ -94,7 +107,7 @@ class MainActivity : ComponentActivity() {
             FirstLabTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    topBar = { CenterAlignedTopAppBar( title = { Text(text = "Super Game Counter") } ) }
+                    topBar = { CenterAlignedTopAppBar( title = { Text(stringResource(R.string.super_game_counter)) } ) }
                 ) { innerPadding ->
                     GameStateDisplay(name = userName, score, level, Modifier.padding(innerPadding), incrementScoreAndLevel, goToEndGameActivity,
                         onDecButtonClick = decrementScoreandLevel)
@@ -155,11 +168,29 @@ fun GameStateDisplay(
     initLevel: Int,
     modifier: Modifier = Modifier,
     onIncButtonClick : (Int) -> Map<String,Int>,
-    onEndGameButtonClick : () -> Unit,
+    onEndGameButtonClick : (Boolean) -> Unit,
     onDecButtonClick: (Int) -> Map<String, Int>
 ) {
     var score by remember { mutableIntStateOf(initScore) }
     var level by remember { mutableIntStateOf(initLevel) }
+    var showLevel5Message by remember (level){
+        mutableStateOf(level == 5)
+    }
+
+    val columnBackgroundColor = when {
+        level in 0..2 -> colorResource(id = R.color.level_0_2)
+        level in 3..6 -> colorResource(id = R.color.level_3_6)
+        level in 7..9 -> colorResource(id = R.color.level_7_9)
+        else -> colorResource(id = R.color.level_0_2)
+    }
+    //Efecto para detectar cuando se alcanza el nivel 10
+    LaunchedEffect(level) {
+        if (level >= 10) {
+            // Pequeño delay para que el usuario vea que alcanzó el nivel 10
+            kotlinx.coroutines.delay(500)
+            onEndGameButtonClick(true)
+        }
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -172,6 +203,22 @@ fun GameStateDisplay(
             horizontalArrangement = Arrangement.Center
         ) {
             Greeting(name)
+        }
+        if (showLevel5Message) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.good_progress_message),
+                    color = Color.Green,
+                    modifier = Modifier
+                        .background(Color.LightGray)
+                        .padding(8.dp)
+                )
+            }
         }
 
         // Segunda fila con dos columnas
@@ -186,12 +233,12 @@ fun GameStateDisplay(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .background(Color.Red)
+                    .background(columnBackgroundColor)
                     .padding(8.dp)
             ) {
-                ShowVariables("Score", score)
+                ShowVariables(stringResource(R.string.score_label), score)
                 Spacer(Modifier.height(8.dp))
-                ShowVariables("Level", level)
+                ShowVariables(stringResource(R.string.level_label), level)
             }
 
             Spacer(Modifier.width(8.dp))
@@ -205,7 +252,7 @@ fun GameStateDisplay(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                StandardButton("Increase Score") {
+                StandardButton(stringResource(R.string.increase_score_button)) {
                     val result = onIncButtonClick(1)
                     score = result[MainActivity.SCORE_KEY]!!
                     level = result[MainActivity.LEVEL_KEY]!!
@@ -213,7 +260,7 @@ fun GameStateDisplay(
                 }
                 Spacer(Modifier.height(8.dp))
 
-                // NUEVO: Botón para decrementar
+                // Botón para decrementar
                 StandardButton(
                     label = "Decrease Score",
                     onClick = {
@@ -233,9 +280,9 @@ fun GameStateDisplay(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.Center
         ) {
-            StandardButton("End Game") {
+            StandardButton(stringResource(R.string.end_game_button)) {
                 // Acción al hacer clic: abrir EndGameActivity
-                onEndGameButtonClick()
+                onEndGameButtonClick(false)
             }
         }
     }
@@ -245,7 +292,7 @@ fun GameStateDisplay(
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+        text = stringResource(R.string.hello_user, name),
         modifier = modifier
     )
 }

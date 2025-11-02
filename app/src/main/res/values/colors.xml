@@ -7,4 +7,14 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Colores para niveles -->
+    <color name="level_0_2">#FFF44336</color>    <!-- Rojo -->
+    <color name="level_3_6">#FFFF9800</color>    <!-- Naranja -->
+    <color name="level_7_9">#FF006400</color>    <!-- Verde oscuro -->
+
+    <!-- Colores adicionales -->
+    <color name="light_gray">#FFD3D3D3</color>
+    <color name="background_green">#FF4CAF50</color>
+    <color name="background_yellow">#FFFFEB3B</color>
 </resources>

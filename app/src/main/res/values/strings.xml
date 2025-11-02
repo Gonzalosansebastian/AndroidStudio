@@ -1,4 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FirstLab</string>
-    <string name="title_activity_end_game">EndGameActivity</string>
+    <string name="title_activity_end_game">End Game</string>
+
+    <!-- LauncherActivity -->
+    <string name="launcher_title">Game Scorer</string>
+    <string name="username_hint">Nombre de usuario</string>
+    <string name="play_button">Jugar</string>
+
+    <!-- MainActivity -->
+    <string name="super_game_counter">Super Game Counter</string>
+    <string name="hello_user">Hello %s!</string>
+    <string name="score_label">Score</string>
+    <string name="level_label">Level</string>
+    <string name="increase_score_button">Increase Score</string>
+    <string name="decrease_score_button">Decrease Score</string>
+    <string name="end_game_button">End Game</string>
+    <string name="good_progress_message">¡Vas en buen camino!</string>
+    <string name="almost_level_10_message">¡Casi llegas al nivel 10!</string>
+
+    <!-- EndGameActivity -->
+    <string name="congratulations_message">¡Felicidades, alcanzaste el nivel 10!</string>
+    <string name="game_ended_message">Juego terminado. Pulsa el botón para volver a empezar</string>
+    <string name="game_over">Game Over!</string>
+    <string name="send_data_button">Enviar datos...</string>
+    <string name="share_subject">Puntuación del jugador %s</string>
+    <string name="share_body">El jugador %s ha obtenido una puntuación de %d puntos y ha alcanzado el nivel %d</string>
+    <string name="share_chooser_title">Compartir puntuación</string>
 </resources>
