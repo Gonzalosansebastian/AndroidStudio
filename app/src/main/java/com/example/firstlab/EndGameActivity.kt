@@ -102,16 +102,20 @@ class EndGameActivity : ComponentActivity() {
                             )
                             Button(
                                 onClick = {
+
+                                    val subject = "Puntuación del jugador $userName"
+                                    val body = "El jugador $userName ha obtenido una puntuación de $score puntos y ha alcanzado el nivel $level"
+
                                     // Acción al presionar el botón
                                     val sendIntent = Intent().apply {
                                         action = Intent.ACTION_SEND
                                         putExtra(
                                             Intent.EXTRA_SUBJECT,
-                                            "Puntuacion del jugador $userName"
+                                            subject
                                         )
                                         putExtra(
-                                            Intent.EXTRA_SUBJECT,
-                                            "El jugador $userName ha obtenido la puntación de $score puntos y ha alcanzado el nivel $level"
+                                            Intent.EXTRA_TEXT,
+                                            body
                                         )
                                         type = "text/plain"
                                     }

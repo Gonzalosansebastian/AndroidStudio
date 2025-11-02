@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
         intent.putExtra(SCORE_KEY, score)
         intent.putExtra(LEVEL_KEY, level)
         intent.putExtra(REACHED_LEVEL_10_KEY, reachedLevel10)
-        intent.putExtra("nombre de usuario", userName)
+        intent.putExtra("nombre_usuario", userName)
         startActivity(intent)
     }
 
